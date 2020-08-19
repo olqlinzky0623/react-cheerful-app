@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import theme from './theme'
+import {ThemeProvider} from 'styled-components'
+import {MainLayout} from 'layouts'
 
 function App() {
+  localStorage.clear()
+  localStorage.setItem('theme', JSON.stringify({
+    type: 'light',
+    color: 'red'
+  }))
+  const getTheme = JSON.parse(localStorage.getItem('theme'))
+  const myTheme = theme(getTheme.type, getTheme.color)
+
+  useEffect(() => {
+    window.document
+      .getElementsByTagName('body')
+      .item(0)
+      .setAttribute('style',`overflow:hidden; background:${myTheme.palette.background.default}; color:${myTheme.palette.secondary};`)
+  }, [myTheme])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <ThemeProvider theme={myTheme}>
+        <MainLayout/>
+      </ThemeProvider>
+    )
 }
 
-export default App;
+export default App
+
+
